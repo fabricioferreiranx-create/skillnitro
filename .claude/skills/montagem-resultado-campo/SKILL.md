@@ -79,3 +79,12 @@ Logos em branco (Nitro + Vale). RTV padrão: Fabricio F Fagundes (trocar só se 
 Benefícios aprovados — Revita: rápida recuperação da planta pós-estresses; redução de danos por fitotoxicidade;
 maior desenvolvimento vegetal e vigor de plantas. Speed: balanço nutricional de macro e micronutrientes;
 rápida eficiência de absorção de nutrientes; alta solubilidade e segurança de uso.
+
+## Gerar vários quadros de uma vez (build_board.py)
+
+`scripts/build_board.py spec.json SAIDA.dc.html` gera o quadro completo a partir de um JSON (veja o cabeçalho do script).
+Dois layouts, ambos com a mesma identidade:
+- `stacked`: antes/depois empilhado, fotos largas (recortar com proporção 952:500 e 952:480, horizonte a ~25-40% da altura da foto).
+- `side`: controle x tratado lado a lado, para fotos em pé (proporção 540:880). Etiquetas "Controle" e nome do produto.
+Produtos aceitam `tag` (ex.: "Gramíneas") e quantidade 1 ou 2 (o "+" só aparece com 2).
+Dose desconhecida vira `[dose] kg/ha` e deve ser perguntada ao usuário. Cidade com UF: "Canarana – MT".
