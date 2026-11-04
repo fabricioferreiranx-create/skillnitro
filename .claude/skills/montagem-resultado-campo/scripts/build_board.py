@@ -17,7 +17,7 @@ spec.json:
   "products": [ {"name":"Revita","tag":"","dose":"1 L/ha","img":"<id>","img_h":172,"alt":"...","benefits":["...","...","..."]} ]
 }
 Fotos: layout stacked -> foto A com proporção 952:500 e foto B 952:480 (horizonte ~25-40% da altura);
-layout side -> cada foto com proporção 540:880.
+layout side -> cada foto com proporção 540:880; ou lista de 2 fotos por lado (cada uma 540:440).
 """
 import json, sys
 
@@ -41,15 +41,24 @@ def row(p):
 </div>'''
 
 
+def im(ph, alt):
+    """Uma foto ocupando o painel, ou duas empilhadas (lista de 2 ids)."""
+    one = 'style="width: 100%; height: 100%; object-fit: cover; display: block"'
+    if isinstance(ph, list):
+        return ('<div style="width: 100%; height: 100%; display: grid; grid-template-rows: 1fr 1fr; gap: 4px">'
+                + "".join(f'<img src="/_blob/{p}" alt="{alt}" {one}>' for p in ph) + '</div>')
+    return f'<img src="/_blob/{ph}" alt="{alt}" {one}>'
+
+
 def photos(s):
     if s["layout"] == "side":
         return f'''<div style="position: relative; height: 880px; flex: none; background: #052E1B">
 <div style="position: absolute; left: 0; top: 0; width: 540px; height: 880px; clip-path: polygon(0 0, 100% 0, 88.9% 100%, 0 100%)">
-<img src="/_blob/{s["photo_a"]}" alt="{s["alt_a"]}" style="width: 100%; height: 100%; object-fit: cover; display: block">
+{im(s["photo_a"], s["alt_a"])}
 <div style="{LAB}left: 28px; top: 28px; background: #F4FAF1; color: #052E1B">{s["label_a"]}</div>
 </div>
 <div style="position: absolute; left: 412px; top: 0; width: 540px; height: 880px; clip-path: polygon(25.9% 0, 100% 0, 100% 100%, 14.8% 100%)">
-<img src="/_blob/{s["photo_b"]}" alt="{s["alt_b"]}" style="width: 100%; height: 100%; object-fit: cover; display: block">
+{im(s["photo_b"], s["alt_b"])}
 <div style="{LAB}right: 28px; bottom: 28px; background: {{{{accent}}}}; color: #052E1B">{s["label_b"]}</div>
 </div>
 </div>'''
