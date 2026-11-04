@@ -88,3 +88,6 @@ Dois layouts, ambos com a mesma identidade:
 - `side`: controle x tratado lado a lado, para fotos em pé (proporção 540:880). Etiquetas "Controle" e nome do produto.
 Produtos aceitam `tag` (ex.: "Gramíneas") e quantidade 1 ou 2 (o "+" só aparece com 2).
 Dose desconhecida vira `[dose] kg/ha` e deve ser perguntada ao usuário. Cidade com UF: "Canarana – MT".
+
+Quando o responsável não é RTV (ex.: consultor), usar `"rtv_label": "Consultor"` e `"cta_button": "Fale com seu consultor"` no spec.
+Fotos em pé (celular, ~739x1600) em quadro `stacked`: recortar uma faixa horizontal 952:500 / 952:480 que inclua o horizonte; sem foto da área comparativa, o horizonte da foto de baixo fica a ~32% da altura.

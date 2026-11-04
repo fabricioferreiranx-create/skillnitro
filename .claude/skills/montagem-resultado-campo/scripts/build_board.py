@@ -12,7 +12,7 @@ spec.json:
   "label_a": "Dia da aplicação", "label_b": "5 dias após aplicação",
   "alt_a": "...", "alt_b": "...",
   "city": "Canarana – MT", "crop": "Soja", "eval": "5 dias A.A.",
-  "rtv": "Fabricio F Fagundes",
+  "rtv": "Fabricio F Fagundes", "rtv_label": "RTV" (opcional, ex.: "Consultor"), "cta_button": "Fale com seu RTV" (opcional),
   "logos": ["<id nitro branco>", "<id vale branco>"],
   "products": [ {"name":"Revita","tag":"","dose":"1 L/ha","img":"<id>","img_h":172,"alt":"...","benefits":["...","...","..."]} ]
 }
@@ -123,11 +123,11 @@ body{{margin:0}}
 
 <div style="flex: none; display: flex; align-items: center; justify-content: space-between; gap: 24px; box-sizing: border-box; height: 72px; padding: 0 14px 0 28px; background: rgba(244,250,241,0.09); border: 2px solid rgba(244,250,241,0.28); border-radius: 999px">
 <div style="font-size: 28px; font-weight: 800; line-height: 1.1">Garanta esse resultado na sua lavoura</div>
-<div style="flex: none; background: {{{{accent}}}}; color: #052E1B; border-radius: 999px; font-size: 25px; font-weight: 800; line-height: 1; padding: 14px 28px">Fale com seu RTV</div>
+<div style="flex: none; background: {{{{accent}}}}; color: #052E1B; border-radius: 999px; font-size: 25px; font-weight: 800; line-height: 1; padding: 14px 28px">{s.get("cta_button", "Fale com seu RTV")}</div>
 </div>
 
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: auto">
-<div style="display: flex; flex-direction: column; gap: 2px"><div style="font-size: 20px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: #B9D9C2">RTV</div><div style="font-size: 34px; font-weight: 800">{s["rtv"]}</div></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><div style="font-size: 20px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: #B9D9C2">{s.get("rtv_label", "RTV")}</div><div style="font-size: 34px; font-weight: 800">{s["rtv"]}</div></div>
 <div style="display: flex; align-items: center; gap: 26px">
 <img src="/_blob/{l1}" alt="Logo Nitro" style="height: 56px; width: auto; display: block">
 <div style="width: 2px; height: 48px; background: rgba(244,250,241,0.45)"></div>
