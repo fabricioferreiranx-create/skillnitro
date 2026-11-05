@@ -16,6 +16,8 @@ spec.json:
   "logos": ["<id nitro branco>", "<id vale branco>"],
   "photo_h": 736,                      # (opcional) altura do bloco de fotos stacked; padrão 880
   "details": {"photo_a":"<id>","photo_b":"<id>","label_a":"...","label_b":"...","alt_a":"...","alt_b":"...","h":190},  # (opcional) faixa de fotos de detalhe (936x380); reduz número do topo e espaços
+  "compact_rows": true,                # (opcional) faixas de produto mais baixas (use com 2 benefícios por produto)
+  "tight": true,                       # (opcional) número do topo 130px e espaços 18px (último recurso)
   "products": [ {"name":"Revita","tag":"","dose":"1 L/ha","img":"<id>","img_h":172,"alt":"...","benefits":["...","...","..."]} ]
 }
 Fotos: layout stacked -> foto A com proporção 952:500 e foto B 952:480 (horizonte ~25-40% da altura);
@@ -28,14 +30,15 @@ LAB = "position: absolute; font-weight: 800; font-size: 34px; letter-spacing: 3p
 FIELD = '<div style="display: flex; flex-direction: column; gap: 2px"><div style="font-size: 20px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: #B9D9C2">%s</div><div style="font-size: 30px; font-weight: 800">%s</div></div>'
 
 
-def row(p):
+def row(p, compact=False):
+    nm, ds, mh, pd = (52, 34, 132, 14) if compact else (58, 38, 160, 18)
     tag = ('<div style="font-weight: 800; font-size: 22px; letter-spacing: 3px; text-transform: uppercase; color: #B9D9C2">%s</div>' % p["tag"]) if p.get("tag") else ""
     bl = "\n".join(BUL % b for b in p["benefits"])
-    return f'''<div style="position: relative; min-height: 160px; box-sizing: border-box; background: rgba(244,250,241,0.09); border: 2px solid rgba(244,250,241,0.28); padding: 18px 180px 18px 28px; display: flex; align-items: center; gap: 28px">
+    return f'''<div style="position: relative; min-height: {mh}px; box-sizing: border-box; background: rgba(244,250,241,0.09); border: 2px solid rgba(244,250,241,0.28); padding: {pd}px 180px {pd}px 28px; display: flex; align-items: center; gap: 28px">
 <img src="/_blob/{p["img"]}" alt="{p["alt"]}" style="position: absolute; right: 22px; bottom: 10px; height: {p.get("img_h", 165)}px; width: auto; filter: drop-shadow(0 12px 18px rgba(0,0,0,0.45))">
 <div style="flex: none; width: 210px; display: flex; flex-direction: column; gap: 4px">
-<div style="font-family: 'Anton', Impact, sans-serif; font-size: 58px; line-height: 1; letter-spacing: 3px; text-transform: uppercase">{p["name"]}</div>
-{tag}<div style="font-weight: 800; font-size: 38px; color: {{{{accent}}}}">{p["dose"]}</div>
+<div style="font-family: 'Anton', Impact, sans-serif; font-size: {nm}px; line-height: 1; letter-spacing: 3px; text-transform: uppercase">{p["name"]}</div>
+{tag}<div style="font-weight: 800; font-size: {ds}px; color: {{{{accent}}}}">{p["dose"]}</div>
 </div>
 <div style="flex: 1; display: flex; flex-direction: column; gap: 9px; font-size: 22px; font-weight: 700; line-height: 1.25; color: #E3F1E7">
 {bl}
@@ -94,7 +97,7 @@ def details(s):
 
 
 def build(s):
-    rows = "\n".join(row(p) for p in s["products"])
+    rows = "\n".join(row(p, s.get("compact_rows", False)) for p in s["products"])
     plus = ('<div style="position: absolute; left: 118px; top: 50%; width: 52px; height: 52px; margin-left: -26px; margin-top: -26px; border-radius: 50%; background: {{accent}}; color: #052E1B; display: flex; align-items: center; justify-content: center; font-family: \'Anton\', Impact, sans-serif; font-size: 38px; line-height: 1">+</div>'
             if len(s["products"]) > 1 else "")
     l1, l2 = s["logos"]
@@ -114,13 +117,13 @@ def build(s):
 body{{margin:0}}
 </style>
 </helmet>
-<div style="position: relative; width: 1080px; height: 1920px; box-sizing: border-box; padding: 48px 64px 48px; background: radial-gradient(120% 60% at 100% 0%, #0E6B3C 0%, #08472A 45%, #052E1B 100%); color: #F4FAF1; font-family: 'Archivo', system-ui, sans-serif; display: flex; flex-direction: column; gap: {18 if s.get("details") else 22}px; overflow: hidden">
+<div style="position: relative; width: 1080px; height: 1920px; box-sizing: border-box; padding: 48px 64px 48px; background: radial-gradient(120% 60% at 100% 0%, #0E6B3C 0%, #08472A 45%, #052E1B 100%); color: #F4FAF1; font-family: 'Archivo', system-ui, sans-serif; display: flex; flex-direction: column; gap: {18 if s.get("tight") else 22}px; overflow: hidden">
 
 <div style="display: flex; flex-direction: column; gap: 12px">
 <div style="align-self: flex-start; background: {{{{accent}}}}; color: #052E1B; font-weight: 800; font-size: 28px; letter-spacing: 6px; text-transform: uppercase; padding: 10px 22px">Resultado de campo</div>
 <div style="display: flex; align-items: flex-end; gap: 28px">
-<div style="font-family: 'Anton', Impact, sans-serif; font-size: {130 if s.get("details") else 170}px; line-height: 0.82; color: {{{{accent}}}}; letter-spacing: -4px">{s["number"]}</div>
-<div style="font-family: 'Anton', Impact, sans-serif; font-size: {44 if s.get("details") else 56}px; line-height: 0.98; text-transform: uppercase; padding-bottom: 4px">Dias<br>após a<br>aplicação</div>
+<div style="font-family: 'Anton', Impact, sans-serif; font-size: {130 if s.get("tight") else 170}px; line-height: 0.82; color: {{{{accent}}}}; letter-spacing: -4px">{s["number"]}</div>
+<div style="font-family: 'Anton', Impact, sans-serif; font-size: {44 if s.get("tight") else 56}px; line-height: 0.98; text-transform: uppercase; padding-bottom: 4px">Dias<br>após a<br>aplicação</div>
 </div>
 </div>
 

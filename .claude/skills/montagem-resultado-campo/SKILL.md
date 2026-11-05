@@ -95,3 +95,5 @@ Fotos em pé (celular, ~739x1600) em quadro `stacked`: recortar uma faixa horizo
 Fotos de detalhe (close das plantas) abaixo das fotos principais: spec `details` + `photo_h` (ex.: 736) no `build_board.py`.
 Recortar as fotos principais na nova proporção (952:`photo_h*500/880` e 952:`photo_h*480/880`) e os detalhes em 936x380. O número do topo e os espaços encolhem automaticamente.
 Pedido de "4K": é ampliação por interpolação (Lanczos + realce leve), não cria detalhe; avisar o usuário e pedir a foto original.
+
+Com faixa de detalhe: usar `photo_h` 752, `details.h` 170 (tiles 936x340), `compact_rows: true` e 2 benefícios por produto (mantém número do topo 170 e espaços 22). `tight: true` só como último recurso. O usuário achou a versão com número 130/espaços 18 e 3 benefícios "muito apertada".
