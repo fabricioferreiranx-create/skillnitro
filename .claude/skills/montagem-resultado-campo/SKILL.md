@@ -91,3 +91,7 @@ Dose desconhecida vira `[dose] kg/ha` e deve ser perguntada ao usuário. Cidade 
 
 Quando o responsável não é RTV (ex.: consultor), usar `"rtv_label": "Consultor"` e `"cta_button": "Fale com seu consultor"` no spec.
 Fotos em pé (celular, ~739x1600) em quadro `stacked`: recortar uma faixa horizontal 952:500 / 952:480 que inclua o horizonte; sem foto da área comparativa, o horizonte da foto de baixo fica a ~32% da altura.
+
+Fotos de detalhe (close das plantas) abaixo das fotos principais: spec `details` + `photo_h` (ex.: 736) no `build_board.py`.
+Recortar as fotos principais na nova proporção (952:`photo_h*500/880` e 952:`photo_h*480/880`) e os detalhes em 936x380. O número do topo e os espaços encolhem automaticamente.
+Pedido de "4K": é ampliação por interpolação (Lanczos + realce leve), não cria detalhe; avisar o usuário e pedir a foto original.

@@ -14,6 +14,8 @@ spec.json:
   "city": "Canarana – MT", "crop": "Soja", "eval": "5 dias A.A.",
   "rtv": "Fabricio F Fagundes", "rtv_label": "RTV" (opcional, ex.: "Consultor"), "cta_button": "Fale com seu RTV" (opcional),
   "logos": ["<id nitro branco>", "<id vale branco>"],
+  "photo_h": 736,                      # (opcional) altura do bloco de fotos stacked; padrão 880
+  "details": {"photo_a":"<id>","photo_b":"<id>","label_a":"...","label_b":"...","alt_a":"...","alt_b":"...","h":190},  # (opcional) faixa de fotos de detalhe (936x380); reduz número do topo e espaços
   "products": [ {"name":"Revita","tag":"","dose":"1 L/ha","img":"<id>","img_h":172,"alt":"...","benefits":["...","...","..."]} ]
 }
 Fotos: layout stacked -> foto A com proporção 952:500 e foto B 952:480 (horizonte ~25-40% da altura);
@@ -62,16 +64,33 @@ def photos(s):
 <div style="{LAB}right: 28px; bottom: 28px; background: {{{{accent}}}}; color: #052E1B">{s["label_b"]}</div>
 </div>
 </div>'''
-    return f'''<div style="position: relative; height: 880px; flex: none; background: #052E1B">
-<div style="position: absolute; left: 0; top: 0; width: 952px; height: 500px; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%)">
+    k = s.get("photo_h", 880) / 880
+    H, A, T, B = round(880 * k), round(500 * k), round(400 * k), round(480 * k)
+    return f'''<div style="position: relative; height: {H}px; flex: none; background: #052E1B">
+<div style="position: absolute; left: 0; top: 0; width: 952px; height: {A}px; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%)">
 <img src="/_blob/{s["photo_a"]}" alt="{s["alt_a"]}" style="width: 100%; height: 100%; object-fit: cover; display: block">
 <div style="{LAB}left: 28px; top: 28px; background: #F4FAF1; color: #052E1B">{s["label_a"]}</div>
 </div>
-<div style="position: absolute; left: 0; top: 400px; width: 952px; height: 480px; clip-path: polygon(0 23.3%, 100% 12.9%, 100% 100%, 0 100%)">
+<div style="position: absolute; left: 0; top: {T}px; width: 952px; height: {B}px; clip-path: polygon(0 23.3%, 100% 12.9%, 100% 100%, 0 100%)">
 <img src="/_blob/{s["photo_b"]}" alt="{s["alt_b"]}" style="width: 100%; height: 100%; object-fit: cover; display: block">
 <div style="{LAB}left: 28px; bottom: 28px; background: {{{{accent}}}}; color: #052E1B">{s["label_b"]}</div>
 </div>
 </div>'''
+
+
+def details(s):
+    """Faixa de fotos de detalhe (2 fotos lado a lado) logo abaixo das fotos principais."""
+    d = s.get("details")
+    if not d:
+        return ""
+    h = d.get("h", 190)
+    tile = lambda ph, alt, lab, bg, fg: (
+        f'<div style="position: relative; height: {h}px; overflow: hidden; background: #052E1B">'
+        f'<img src="/_blob/{ph}" alt="{alt}" style="width: 100%; height: 100%; object-fit: cover; display: block">'
+        f'<div style="position: absolute; left: 14px; bottom: 14px; background: {bg}; color: {fg}; font-weight: 800; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; padding: 8px 14px">{lab}</div></div>')
+    return ('<div style="flex: none; display: grid; grid-template-columns: 1fr 1fr; gap: 16px">'
+            + tile(d["photo_a"], d["alt_a"], d["label_a"], "#F4FAF1", "#052E1B")
+            + tile(d["photo_b"], d["alt_b"], d["label_b"], "{{accent}}", "#052E1B") + '</div>')
 
 
 def build(s):
@@ -95,17 +114,19 @@ def build(s):
 body{{margin:0}}
 </style>
 </helmet>
-<div style="position: relative; width: 1080px; height: 1920px; box-sizing: border-box; padding: 48px 64px 48px; background: radial-gradient(120% 60% at 100% 0%, #0E6B3C 0%, #08472A 45%, #052E1B 100%); color: #F4FAF1; font-family: 'Archivo', system-ui, sans-serif; display: flex; flex-direction: column; gap: 22px; overflow: hidden">
+<div style="position: relative; width: 1080px; height: 1920px; box-sizing: border-box; padding: 48px 64px 48px; background: radial-gradient(120% 60% at 100% 0%, #0E6B3C 0%, #08472A 45%, #052E1B 100%); color: #F4FAF1; font-family: 'Archivo', system-ui, sans-serif; display: flex; flex-direction: column; gap: {18 if s.get("details") else 22}px; overflow: hidden">
 
 <div style="display: flex; flex-direction: column; gap: 12px">
 <div style="align-self: flex-start; background: {{{{accent}}}}; color: #052E1B; font-weight: 800; font-size: 28px; letter-spacing: 6px; text-transform: uppercase; padding: 10px 22px">Resultado de campo</div>
 <div style="display: flex; align-items: flex-end; gap: 28px">
-<div style="font-family: 'Anton', Impact, sans-serif; font-size: 170px; line-height: 0.82; color: {{{{accent}}}}; letter-spacing: -4px">{s["number"]}</div>
-<div style="font-family: 'Anton', Impact, sans-serif; font-size: 56px; line-height: 0.98; text-transform: uppercase; padding-bottom: 4px">Dias<br>após a<br>aplicação</div>
+<div style="font-family: 'Anton', Impact, sans-serif; font-size: {130 if s.get("details") else 170}px; line-height: 0.82; color: {{{{accent}}}}; letter-spacing: -4px">{s["number"]}</div>
+<div style="font-family: 'Anton', Impact, sans-serif; font-size: {44 if s.get("details") else 56}px; line-height: 0.98; text-transform: uppercase; padding-bottom: 4px">Dias<br>após a<br>aplicação</div>
 </div>
 </div>
 
 {photos(s)}
+
+{details(s)}
 
 <div style="display: flex; flex-direction: column; gap: 12px">
 <div style="font-weight: 800; font-size: 24px; letter-spacing: 6px; text-transform: uppercase; color: {{{{accent}}}}">Manejo Nitro</div>
