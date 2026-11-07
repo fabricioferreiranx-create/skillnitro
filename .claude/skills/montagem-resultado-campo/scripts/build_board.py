@@ -97,9 +97,10 @@ def details(s):
 
 
 def build(s):
-    rows = "\n".join(row(p, s.get("compact_rows", False)) for p in s["products"])
-    plus = ('<div style="position: absolute; left: 118px; top: 50%; width: 52px; height: 52px; margin-left: -26px; margin-top: -26px; border-radius: 50%; background: {{accent}}; color: #052E1B; display: flex; align-items: center; justify-content: center; font-family: \'Anton\', Impact, sans-serif; font-size: 38px; line-height: 1">+</div>'
-            if len(s["products"]) > 1 else "")
+    conn = ('<div style="position: relative; height: 0; margin-top: -14px; z-index: 2">'
+            '<div style="position: absolute; left: 118px; top: -13px; width: 40px; height: 40px; margin-left: -20px; border-radius: 50%; background: {{accent}}; color: #052E1B; display: flex; align-items: center; justify-content: center; font-family: \'Anton\', Impact, sans-serif; font-size: 30px; line-height: 1">+</div></div>')
+    rows = ("\n" + conn + "\n").join(row(p, s.get("compact_rows", False)) for p in s["products"])
+    plus = ""
     l1, l2 = s["logos"]
     return f'''<!doctype html>
 <html lang="pt-BR">
