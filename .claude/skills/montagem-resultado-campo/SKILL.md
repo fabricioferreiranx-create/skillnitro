@@ -97,3 +97,9 @@ Recortar as fotos principais na nova proporção (952:`photo_h*500/880` e 952:`p
 Pedido de "4K": é ampliação por interpolação (Lanczos + realce leve), não cria detalhe; avisar o usuário e pedir a foto original.
 
 Com faixa de detalhe: usar `photo_h` 752, `details.h` 170 (tiles 936x340), `compact_rows: true` e 2 benefícios por produto (mantém número do topo 170 e espaços 22). `tight: true` só como último recurso. O usuário achou a versão com número 130/espaços 18 e 3 benefícios "muito apertada".
+
+## Tratamento de foto e embalagens de outros produtos (aprendido)
+
+- "Nitidez" = unsharp mask (raio 1,6, 110%) + contraste leve (1,04). "Corrigir o branco" = balanço de branco SUAVE: ganhos por canal limitados a ±10% e aplicados com força ~0,3 só na foto com dominante (ex.: pôr do sol rosado). Gray-world cheio deixa o verde azulado: não usar.
+- Embalagens de produtos Nitro (Loader, Sustent, Resist etc.): extrair do portfólio PDF com `pdfimages -png -f <pág> -l <pág>` e juntar a máscara `smask` como alfa (PNG transparente 194x250). Revita e Speed já têm cutout próprio.
+- Três produtos: `compact_rows: true`, 2 benefícios cada (texto até ~35 caracteres), `photo_h` 790. Doses: confirmar unidade com o portfólio (Sustent e Resist em kg/ha, Revita em L/ha, Speed em kg/ha).
